@@ -6,7 +6,7 @@
 	// Default settings object.	
 	// See http://jacklmoore.com/colorbox for details.
 	defaults = {
-		transition: "elastic",
+		transition: "elastic", //elastic, fade or none
 		speed: 300,
 		width: false,
 		initialWidth: "600",
@@ -513,6 +513,7 @@
 		scrollLeft;
 		
 		$window.unbind('resize.' + prefix);
+		$window.unbind('scroll.' + prefix);
 
 		// remove the modal so that it doesn't influence the document width/height        
 		$box.css({top: -9e4, left: -9e4});
@@ -575,9 +576,14 @@
 				
 				if (settings.reposition) {
 					setTimeout(function () {  // small delay before binding onresize due to an IE8 bug.
-						$window.bind('resize.' + prefix, publicMethod.position);
+						$window.bind('resize.' + prefix, publicMethod.position);						
 					}, 1);
+					$window.bind('scroll.' + prefix, publicMethod.position);
 				}
+				
+				/*$window.bind('scroll.'+prefix,function(){
+					publicMethod.position();
+				});*/
 
 				if (loadedCallback) {
 					loadedCallback();
@@ -975,9 +981,5 @@
 	};
 
 	publicMethod.settings = defaults;
-	
-	$(window).bind('scroll',function(){
-		publicMethod.position();
-	});
 
 }(jQuery, document, this));
