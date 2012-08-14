@@ -898,6 +898,8 @@
 			$loadingBay.load(href, settings.data, function (data, status, xhr){
 				if(status === 'error'){
 					$submitBtn.hide();	
+				}else{
+					$submitBtn.show();
 				}
 				prep(status === 'error' ? $tag(div, 'Error').html(settings.xhrError) : $(this).contents());
 			});
