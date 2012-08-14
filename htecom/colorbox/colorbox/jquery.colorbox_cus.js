@@ -29,12 +29,12 @@
 		opacity: 0.9,
 		preloading: true,
 
-		current: "image {current} of {total}",
+		current: "Hình ảnh {current}/{total}",
 		previous: "previous",
 		next: "next",
 		close: "close",
-		xhrError: "This content failed to load.",
-		imgError: "This image failed to load.",
+		xhrError: "Tải nội dung không thành công.",
+		imgError: "Tải hình ảnh không thành công.",
 
 		open: false,
 		returnFocus: true,
@@ -50,7 +50,7 @@
 		onComplete: false,
 		onCleanup: false,
 		onClosed: false,
-		overlayClose: true,		
+		overlayClose: false,		
 		escKey: true,
 		arrowKey: true,
 		top: false,
@@ -59,7 +59,16 @@
 		right: false,
 		fixed: false,
 		data: undefined,
-		defaultTitle: 'Thông báo'
+		attrTitle: {
+			close: 'Đóng',
+			confirm:'Xác nhận',
+			notice: 'Thông báo',
+			next: 'Sau',
+			prev: 'Trước',
+			auto: 'Tự động',
+			play: 'Chạy',
+			pause: 'Tạm dừng'
+		}
 	},
 	
 	// Abstracting the HTML and event identifiers for easy rebranding
@@ -101,7 +110,7 @@
 	$prev,
 	$close,
 	$buttons,
-	$closeBtn,
+	//$closeBtn,
 	$submitBtn,
 	$groupControls,
 	
@@ -211,6 +220,7 @@
 			start = function () {
 				$slideshow
 					.text(settings.slideshowStop)
+					.attr('title',settings.attrTitle.auto)
 					.unbind(click)
 					.bind(event_complete, function () {
 						if (settings.loop || $related[index + 1]) {
@@ -229,6 +239,7 @@
 				clearTimeout(timeOut);
 				$slideshow
 					.text(settings.slideshowStart)
+					.attr('title',settings.attrTitle.pause)
 					.unbind([event_complete, event_load, event_cleanup, click].join(' '))
 					.one(click, function () {
 						publicMethod.next();
@@ -237,7 +248,8 @@
 				$box.removeClass(className + "on").addClass(className + "off");
 			};
 			
-			if (settings.slideshowAuto) {
+			if (settings.slideshowAuto)
+			{
 				start();
 			} else {
 				stop();
@@ -307,8 +319,9 @@
 				
 				$groupControls.add($title).hide();
 				
-				$close.html(settings.close).show();
-				$closeBtn.val(settings.close);
+				$close.html(settings.close).attr('title',settings.attrTitle.close).show();
+				//$closeBtn.val(settings.close);
+				$submitBtn.attr('title',settings.attrTitle.confirm);
 			}
 			
 			publicMethod.load(true);
@@ -334,15 +347,13 @@
 				$prev = $tag(div, "Previous"),
 				$slideshow = $tag(div, "Slideshow").bind(event_open, slideshow)
 				,$close = $tag(div, "Close")
-				,$buttons = $tag(div, "Buttons").append(
+				,$submitBtn = $tag(div, "SubmitBtn").hide()
+				/*,$buttons = $tag(div, "Buttons").append(
 					$closeBtn = $tag('input', "CloseBtn").attr({
 						type: 'button'
 					}),
-					$submitBtn = $tag('input', "SubmitBtn").attr({
-						type: 'button',
-						value: 'Submit'
-					}).hide()
-				)
+					$submitBtn = $tag(div, "SubmitBtn")
+				)*/
 			);
 			
 			$wrap.append( // The 3x3 Grid that makes up ColorBox
@@ -397,9 +408,9 @@
 					publicMethod.close();
 				});
 				
-				$closeBtn.click(function () {
+				/*$closeBtn.click(function () {
 					publicMethod.close();
-				});
+				});*/
 				
 				$submitBtn.click(function (){
 					$('form',$box).submit();
@@ -690,15 +701,15 @@
 			
 			$title.html(settings.title).add($loaded).show();
 			if($.trim($title.html()) == 0)
-				$title.html(settings.defaultTitle);
+				$title.html(settings.attrTitle.notice);
 				
 			if (total > 1) { // handle grouping
 				if (typeof settings.current === "string") {
 					$current.html(settings.current.replace('{current}', index + 1).replace('{total}', total)).show();
 				}
 				
-				$next[(settings.loop || index < total - 1) ? "show" : "hide"]().html(settings.next);
-				$prev[(settings.loop || index) ? "show" : "hide"]().html(settings.previous);
+				$next[(settings.loop || index < total - 1) ? "show" : "hide"]().html(settings.attrTitle.next).attr('title',settings.attrTitle.next);
+				$prev[(settings.loop || index) ? "show" : "hide"]().html(settings.attrTitle.prev).attr('title',settings.attrTitle.prev);
 				
 				if (settings.slideshow) {
 					$slideshow.show();
@@ -884,7 +895,10 @@
 				photo.src = href;
 			}, 1);
 		} else if (href) {
-			$loadingBay.load(href, settings.data, function (data, status, xhr) {
+			$loadingBay.load(href, settings.data, function (data, status, xhr){
+				if(status === 'error'){
+					$submitBtn.hide();	
+				}
 				prep(status === 'error' ? $tag(div, 'Error').html(settings.xhrError) : $(this).contents());
 			});
 		}

@@ -9,7 +9,7 @@
 #cboxLoadedContent{overflow:auto;}
 #cboxTitle{margin:0;}
 #cboxLoadingOverlay, #cboxLoadingGraphic{position:absolute; top:0; left:0; width:100%; height:100%;}
-#cboxPrevious, #cboxNext, #cboxClose, #cboxSlideshow{cursor:pointer;}
+#cboxPrevious, #cboxNext, #cboxClose, #cboxSlideshow, #cboxSubmitBtn{cursor:pointer;}
 .cboxPhoto{float:left; margin:auto; border:0; display:block; max-width:none;}
 .cboxIframe{width:100%; height:100%; display:block; border:0;}
 #colorbox, #cboxContent, #cboxLoadedContent{box-sizing:content-box;}
@@ -39,20 +39,32 @@
         #cboxLoadingOverlay{background:url(images/loading_background.png) no-repeat center center;}
         #cboxLoadingGraphic{background:url(images/loading.gif) no-repeat center center;}
         #cboxTitle{position:absolute; top:-22px; left:0; text-align:left; width:100%; font-weight:bold; color:#fff; padding-left:5px}
-        #cboxCurrent{position:absolute; bottom:-29px; left:56px; font-weight:normal; color:#7C7C7C;}
+        #cboxCurrent{position:absolute; bottom:-29px; left:66px; font-weight:normal; color:#7C7C7C;}
         
-        #cboxPrevious, #cboxNext, #cboxClose, #cboxSlideshow{position:absolute; bottom:-32px; background:url(images/controls1.png) no-repeat 0px 0px; width:19px; height:20px; text-indent:-9999px;}
-        #cboxPrevious{left:8px; background-position: -148px 0;}
-        #cboxPrevious:hover{background-position:-148px -20px;}
-        #cboxNext{left:30px; background-position:-167px 0;}
-        #cboxNext:hover{background-position:-167px -20px;}
-        #cboxClose{right:2px; bottom:auto; top:-25px; background-position:-185px 0; width:20px; height:20px}
-        #cboxClose:hover{background-position:-185px -20px;}
+        #cboxPrevious, #cboxNext, #cboxClose, #cboxSubmitBtn, #cboxSlideshow{
+			position:absolute;
+			bottom:-35px;
+			background:url(images/controls1.png) no-repeat 0px 0px;
+			width:23px;
+			height:23px;
+			text-indent:-9999px;
+		}
+        #cboxPrevious{left:8px; background-position: -146px 0;}
+        #cboxPrevious:hover{background-position:-146px -23px;}
+        #cboxNext{left:35px; background-position:-172px 0;}
+        #cboxNext:hover{background-position:-172px -23px;}
+		
+        #cboxClose{right:5px;background-position:-224px 0;}
+        #cboxClose:hover{background-position:-224px -23px;}
+		
+		
+        #cboxSubmitBtn{right:35px;background-position:-198px 0;}
+        #cboxSubmitBtn:hover{background-position:-198px -23px;}
         
-        .cboxSlideshow_on #cboxSlideshow{background-position:-125px 0px; right:27px;}
-        .cboxSlideshow_on #cboxSlideshow:hover{background-position:-150px 0px;}
-        .cboxSlideshow_off #cboxSlideshow{background-position:-150px -25px; right:27px;}
-        .cboxSlideshow_off #cboxSlideshow:hover{background-position:-125px 0px;}
+        .cboxSlideshow_on #cboxSlideshow{background-position:-273px 0px; right:34px;}
+        .cboxSlideshow_on #cboxSlideshow:hover{background-position:-273px -23px;}
+        .cboxSlideshow_off #cboxSlideshow{background-position:-250px 0; right:34px;}
+        .cboxSlideshow_off #cboxSlideshow:hover{background-position:-250px -23px;}
 
 #cboxButtons{
 	position:absolute;
