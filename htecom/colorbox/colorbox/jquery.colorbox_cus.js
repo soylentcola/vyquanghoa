@@ -59,6 +59,7 @@
 		right: false,
 		fixed: false,
 		data: undefined,
+		scroll: false, //di chuyen vi  tri colorbox khi cuon trang
 		attrTitle: {
 			close: 'Đóng',
 			confirm:'Xác nhận',
@@ -577,13 +578,11 @@
 				if (settings.reposition) {
 					setTimeout(function () {  // small delay before binding onresize due to an IE8 bug.
 						$window.bind('resize.' + prefix, publicMethod.position);						
-					}, 1);
+					}, 1);					
+				}
+				if(settings.scroll){
 					$window.bind('scroll.' + prefix, publicMethod.position);
 				}
-				
-				/*$window.bind('scroll.'+prefix,function(){
-					publicMethod.position();
-				});*/
 
 				if (loadedCallback) {
 					loadedCallback();
