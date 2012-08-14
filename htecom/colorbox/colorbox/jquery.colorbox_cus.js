@@ -587,6 +587,12 @@
 				modalDimensions(this);
 			}
 		});
+		
+		if($('form',$box).size() > 0){
+			$submitBtn.show();
+		}else{
+			$submitBtn.hide();
+		}
 	};
 
 	publicMethod.resize = function (options) {
@@ -613,7 +619,7 @@
 			}
 			$loaded.css({height: settings.h});
 			
-			publicMethod.position(settings.transition === "none" ? 0 : settings.speed);
+			publicMethod.position(settings.transition === "none" ? 0 : settings.speed);			
 		}
 	};
 
@@ -898,8 +904,6 @@
 			$loadingBay.load(href, settings.data, function (data, status, xhr){
 				if(status === 'error'){
 					$submitBtn.hide();	
-				}else{
-					$submitBtn.show();
 				}
 				prep(status === 'error' ? $tag(div, 'Error').html(settings.xhrError) : $(this).contents());
 			});
@@ -971,5 +975,9 @@
 	};
 
 	publicMethod.settings = defaults;
+	
+	$(window).bind('scroll',function(){
+		publicMethod.position();
+	});
 
 }(jQuery, document, this));
