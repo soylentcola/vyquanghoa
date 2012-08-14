@@ -34,7 +34,7 @@
 	
     #cboxContent{background:#fff; overflow:visible;}
         .cboxIframe{background:#fff;}
-        #cboxError{padding:50px; border:1px solid #ccc;}
+        #cboxError{padding:20px 30px;}
         #cboxLoadedContent{margin:4px 0;}
         #cboxLoadingOverlay{background:url(images/loading_background.png) no-repeat center center;}
         #cboxLoadingGraphic{background:url(images/loading.gif) no-repeat center center;}
