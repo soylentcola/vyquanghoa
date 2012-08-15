@@ -60,6 +60,15 @@
 		fixed: false,
 		data: undefined,
 		scroll: false, //di chuyen vi  tri colorbox khi cuon trang
+		//confirm: false,
+		buttons: {
+			'close': {
+				html: 'Đóng',
+				click: function(){
+					$().colorbox.close();
+				}
+			}	
+		},
 		attrTitle: {
 			close: 'Đóng',
 			confirm:'Xác nhận',
@@ -190,7 +199,6 @@
 				settings[i] = settings[i].call(element);
 			}
 		}
-		
 		settings.rel = settings.rel || element.rel || 'nofollow';
 		settings.href = settings.href || $(element).attr('href');
 		settings.title = settings.title || element.title;
@@ -200,10 +208,10 @@
 		}
 	}
 
-	function trigger(event, callback) {
+	function trigger(event, callback, elm) {
 		$.event.trigger(event);
 		if (callback) {
-			callback.call(element);
+			callback.call(element, elm);
 		}
 	}
 
@@ -270,6 +278,7 @@
 			$related = $(element);
 			
 			index = 0;
+		
 			
 			if (settings.rel !== 'nofollow') {
 				$related = $('.' + boxElement).filter(function () {
@@ -320,9 +329,11 @@
 				
 				$groupControls.add($title).hide();
 				
-				$close.html(settings.close).attr('title',settings.attrTitle.close).show();
+				//$close.html(settings.close).attr('title',settings.attrTitle.close).show();
 				//$closeBtn.val(settings.close);
-				$submitBtn.attr('title',settings.attrTitle.confirm);
+				//$submitBtn.attr('title',settings.attrTitle.confirm);
+				//console.log(settings.buttons);
+				//publicMethod.createButtons();
 			}
 			
 			publicMethod.load(true);
@@ -347,14 +358,9 @@
 				$next = $tag(div, "Next"),
 				$prev = $tag(div, "Previous"),
 				$slideshow = $tag(div, "Slideshow").bind(event_open, slideshow)
-				,$close = $tag(div, "Close")
-				,$submitBtn = $tag(div, "SubmitBtn").hide()
-				/*,$buttons = $tag(div, "Buttons").append(
-					$closeBtn = $tag('input', "CloseBtn").attr({
-						type: 'button'
-					}),
-					$submitBtn = $tag(div, "SubmitBtn")
-				)*/
+				//,$close = $tag(div, "Close")
+				//,$submitBtn = $tag(div, "SubmitBtn").hide()
+				,$buttons = $tag(div, "Buttons")
 			);
 			
 			$wrap.append( // The 3x3 Grid that makes up ColorBox
@@ -405,18 +411,21 @@
 				$prev.click(function () {
 					publicMethod.prev();
 				});
-				$close.click(function () {
+				
+				/*$close.click(function () {
 					publicMethod.close();
 				});
 				
-				/*$closeBtn.click(function () {
+				$closeBtn.click(function () {
 					publicMethod.close();
 				});*/
 				
-				$submitBtn.click(function (){
-					$('form',$box).submit();
-					//publicMethod.close();
-				});
+				/*$submitBtn.click(function (){
+					if($('form',$box).size() >0)
+						$('form',$box).submit();
+					else if(settings.confirm)
+						publicMethod.close(true);
+				});*/
 				
 				$overlay.click(function () {
 					if (settings.overlayClose) {
@@ -504,7 +513,75 @@
 		
 		return $this;
 	};
-
+	
+	publicMethod.submit = function(){
+		$('form',$box).submit();
+	};
+	
+	publicMethod.confirm = function(){
+		publicMethod.close(true);
+	};
+	
+	publicMethod.button = function(button)
+	{
+		var class_ = $(button).attr('class');
+		$(button).attr('class','uibutton').addClass(class_);
+	};
+	
+	publicMethod.createButtons = function()
+	{
+		var self = this, hasButtons = false;
+		
+		if( settings.buttons ){
+			var buttons = settings.buttons;
+			if (typeof buttons === 'object' && buttons !== null) {
+				$.each(buttons, function() {
+					return !(hasButtons = true);
+				});
+			}
+			if (hasButtons){
+				var attrFn = $.attrFn || {
+					css: true,
+					html: true,
+					width: true,
+					class: true,
+					click: true
+				};
+				console.log('custom buttons');
+				
+				$buttons.empty();
+				
+				$.each(buttons, function(name, props){
+					props = $.isFunction( props ) ? { click: props, text: name } : props;
+					var button = $('<a href="javascript:;"></a>')
+						.click(function() {
+							props.click.apply(self.element[0], arguments);
+						})
+						.appendTo($buttons);
+					$.each( props, function( key, value ){
+						if(key === "id"){
+							value = prefix + value;
+						}						
+						if ( key === "click" ) {
+							return;
+						}
+						if ( key in attrFn ) {
+							button[ key ]( value );
+						} else {
+							button.attr( key, value );
+						}
+					});
+					publicMethod.button(button);
+					/*if ($.fn.button) {
+						button.button();
+					}*/
+				});
+			}
+		}else{
+			console.log('b');
+		}
+	};
+	
 	publicMethod.position = function (speed, loadedCallback) {
 		var 
 		top = 0, 
@@ -593,11 +670,11 @@
 			}
 		});
 		
-		if($('form',$box).size() > 0){
+		/*if(settings.confirm || $('form',$box).size() > 0){
 			$submitBtn.show();
 		}else{
 			$submitBtn.hide();
-		}
+		}*/
 	};
 
 	publicMethod.resize = function (options) {
@@ -638,9 +715,9 @@
 		$loaded.remove();
 		$loaded = $tag(div, 'LoadedContent').append(object);
 		
-		if($('form',object).size() > 0){
+		/*if(settings.confirm || $('form',object).size() > 0){
 			$submitBtn.show();
-		}
+		}*/
 		
 		function getWidth() {
 			settings.w = settings.w || $loaded.width();
@@ -797,7 +874,8 @@
 		}
 	};
 
-	publicMethod.load = function (launched) {
+	publicMethod.load = function (launched)
+	{		
 		var href, setResize, prep = publicMethod.prep;
 		
 		active = true;
@@ -907,12 +985,13 @@
 			}, 1);
 		} else if (href) {
 			$loadingBay.load(href, settings.data, function (data, status, xhr){
-				if(status === 'error'){
+				/*if(status === 'error'){
 					$submitBtn.hide();	
-				}
+				}*/
 				prep(status === 'error' ? $tag(div, 'Error').html(settings.xhrError) : $(this).contents());
 			});
 		}
+		publicMethod.createButtons();
 	};
 		
 	// Navigates to the next page/image in a set.
@@ -931,7 +1010,7 @@
 	};
 
 	// Note: to use this within an iframe use the following format: parent.$.fn.colorbox.close();
-	publicMethod.close = function ()
+	publicMethod.close = function (conf)
 	{
 		if (open && !closing) {
 			
@@ -955,8 +1034,8 @@
 				
 				setTimeout(function () {
 					closing = false;
-					trigger(event_closed, settings.onClosed);
-					$submitBtn.hide();
+					trigger(event_closed, settings.onClosed, conf);
+					//$submitBtn.hide();
 				}, 1);
 			});
 		}
